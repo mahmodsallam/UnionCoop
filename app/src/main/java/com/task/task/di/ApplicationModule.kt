@@ -1,8 +1,8 @@
-package com.dagger.hilt.di
+package com.task.task.di
 
-import com.dagger.hilt.BuildConfig
-import com.dagger.hilt.data.remote.UsersRemoteDS
-import com.dagger.hilt.data.repository.UsersRepository
+import com.task.task.data.remote.GithubReposRemoteDS
+import com.task.task.data.repository.GithubDataRepository
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,7 +18,7 @@ import javax.inject.Singleton
 class ApplicationModule {
 
     @Provides
-    fun provideBaseUrl() = "https://5e510330f2c0d300147c034c.mockapi.io/"
+    fun provideBaseUrl() = "https://ghapi.huchen.dev/"
 
     @Provides
     @Singleton
@@ -36,6 +36,7 @@ class ApplicationModule {
     fun provideRetrofit(okHttpClient: OkHttpClient, baseUrl: String): Retrofit = run {
         Retrofit.Builder()
             .addConverterFactory(MoshiConverterFactory.create())
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .baseUrl(baseUrl)
             .client(okHttpClient)
             .build()
@@ -43,9 +44,9 @@ class ApplicationModule {
 
 
     @Provides
-    fun provideUsersRemoteDS(retrofit: Retrofit): UsersRemoteDS =
-        retrofit.create(UsersRemoteDS::class.java)
+    fun provideGithubReposRemoteDS(retrofit: Retrofit): GithubReposRemoteDS =
+        retrofit.create(GithubReposRemoteDS::class.java)
 
     @Provides
-    fun provideUsersRepository(usersRemoteDS: UsersRemoteDS) = UsersRepository(usersRemoteDS)
+    fun provideGithubDataRepository(githubReposRemoteDS: GithubReposRemoteDS) = GithubDataRepository(githubReposRemoteDS)
 }
